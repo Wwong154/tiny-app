@@ -35,12 +35,30 @@ app.get("/urls/new", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
-  res.send("Link: " + generateRandomString());         // Respond with 'Ok' (we will replace this)
+  let shorten = generateRandomString();
+  while (urlDatabase[shorten]) {
+    shorten = generateRandomString();
+  }
+  urlDatabase[shorten] = req.body.longURL;
+  res.redirect(`http://localhost:8080/urls/${shorten}`);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
-  res.render("urls_show", templateVars);
+  if (!urlDatabase[req.params.shortURL]){
+  res.redirect(`http://localhost:8080/urls/new`)
+  } else {
+    const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+    res.render("urls_show", templateVars);
+  }
+});
+
+app.get("/u/:shortURL", (req, res) => {
+  if (!urlDatabase[req.params.shortURL]){
+    res.redirect(`http://localhost:8080/urls/new`)
+  } else {
+    const longURL = urlDatabase[req.params.shortURL];
+    res.redirect(longURL);
+  }
 });
 
 app.get("/hello", (req, res) => { //no longer need, keep for gag
