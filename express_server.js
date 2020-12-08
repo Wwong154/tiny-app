@@ -40,6 +40,12 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect(`http://localhost:8080/urls/`);
 });
 
+app.post("/urls/:shortURL/update", (req, res) => {
+  console.log(`Update: ${req.params.shortURL} to link to ${req.body.longURL}`);  // Log the POST request body to the console
+  urlDatabase[req.params.shortURL] = req.body.longURL;
+  res.redirect(`http://localhost:8080/urls/`);
+});
+
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
   let shorten = generateRandomString();
