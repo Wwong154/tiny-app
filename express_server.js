@@ -16,6 +16,7 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+
 app.get("/", (req, res) => {
   res.send("Hello!");
 });
@@ -31,6 +32,12 @@ app.get("/urls", (req, res) => {
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
+});
+
+app.post("/urls/:shortURL/delete", (req, res) => {
+  console.log("Delete: " + req.params.shortURL);  // Log the POST request body to the console
+  delete urlDatabase[req.params.shortURL];
+  res.redirect(`http://localhost:8080/urls/`);
 });
 
 app.post("/urls", (req, res) => {
