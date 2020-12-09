@@ -9,6 +9,16 @@
 <body>
   <%- include('partials/_header') %>
   <div class="card text-center">
+    <% if (user_email) { %>
+      <div class="card-header">
+        <h4>Hey, it seem like you have already logged in?</a></h4>
+      </div>
+      <div class="card-body">
+        <form action="/logout" method="GET">
+          <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+      </div>
+    <% } else { %>
       <div class="card-header">
         <h4>New user? <a href="/register">Sign up now!</a></h4>
       </div>
@@ -18,11 +28,12 @@
           <input type="email" name="email" placeholder="example@gmail.com" style="width: 200px">
           <p></p>
           <p class="card-title">Password: </p>
-          <input type="password" name="password" placeholder="password" style="width: 200px">
+          <input type="password" name="password" placeholder="password"   style="width: 200px">
           <p></p>
           <button type="submit" class="btn btn-primary">Login</button>
         </form>
       </div>
+    <% } %>
     <div class="card-footer text-muted">
     </div>
   </div>

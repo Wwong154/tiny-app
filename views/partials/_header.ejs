@@ -11,10 +11,10 @@
       </div>
     </div>
     <% if (!user_email) { %>
-    <form method="POST" action="/login">
-      <input type="text" name="email" placeholder="email" style="width: 150px; ">
-      <button type="submit" class="btn btn-outline-dark">Login</button>
-    </form>
+      <div class="navbar-nav">
+        <a class="nav-item nav-link" href="/login">Login</a>
+        <a class="nav-item nav-link" href="/register">Sign up</a>
+      </div>
     <% } else {%>
       <form method="GET" action="/logout">
         <p>Hi: <%= user_email%>

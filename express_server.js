@@ -101,13 +101,17 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  const userEmail = checkUserExist(req.body.email)
-  if (userEmail) {
-    console.log(`New log in: ${userEmail}`);  // Log the POST request body to the console
+  const userid = checkUserExist(req.body.email)
+  if (userid && users[userid].password === req.body.password) {
+    console.log(`New log in: ${userid}`);  // Log the POST request body to the console
     res.cookie("user_id",checkUserExist(req.body.email));
     res.redirect(`http://localhost:8080/urls/`);
+  } else if (userid) {
+    res.status(403);
+    res.send(`The password you have entered does not match our record`);
   } else {
-    res.redirect(`http://localhost:8080/urls/`);
+    res.status(403);
+    res.send(`The email you entered have not been register yet`);
   }
 });
 
