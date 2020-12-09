@@ -9,18 +9,19 @@
 <body>
   <%- include('partials/_header') %>
   <div class="card text-center">
-    <% if (user_email) { %>
+    <% if (userEmail) { %>
       <div class="card-header">
-        <h4>Hello, it seem like you have already logged in?</a></h4>
+        <h5>🤔 It seem like you have already logged in</h5>
       </div>
       <div class="card-body">
         <form action="/logout" method="GET">
-          <button type="submit" class="btn btn-primary">Logout</button>
+          <p><font size = "4">Do you want to</font></p>
+          <button type="submit" class="btn btn-primary">Logout ?</button>
         </form>
       </div>
     <% } else { %>
       <div class="card-header">
-        <h4>New user? <a href="/register">Sign up now!</a></h4>
+        <h5>New user? <a href="/register">Sign up now!</a></h5>
       </div>
       <div class="card-body">
         <form action="/login" method="POST">

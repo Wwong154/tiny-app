@@ -9,6 +9,17 @@
 <body>
   <%- include('partials/_header') %>
   <div class="card text-center">
+    <% if (userEmail) { %>
+      <div class="card-header">
+        <h5>🤔 It seem like you have already logged in</h5>
+      </div>
+      <div class="card-body">
+        <form action="/logout" method="GET">
+          <p><font size = "4">Do you want to</font></p>
+          <button type="submit" class="btn btn-primary">Logout ?</button>
+        </form>
+      </div>
+    <% } else { %>
       <div class="card-header">
         <h4>Sign Up</h4>
       </div>
@@ -23,8 +34,8 @@
           <button type="submit" class="btn btn-primary">Register</button>
         </form>
       </div>
-    <div class="card-footer text-muted">
-    </div>
+      <% } %>
+      <div class="card-footer text-muted"></div>
   </div>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
