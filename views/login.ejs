@@ -9,16 +9,18 @@
 <body>
   <%- include('partials/_header') %>
   <div class="card text-center">
-      <div class="card-header"></div>
+      <div class="card-header">
+        <h4>New user? <a href="/register">Sign up now!</a></h4>
+      </div>
       <div class="card-body">
-        <form action="/register" method="POST">
+        <form action="/login" method="POST">
           <p class="card-title">E-mail: </p>
           <input type="email" name="email" placeholder="example@gmail.com" style="width: 200px">
           <p></p>
           <p class="card-title">Password: </p>
           <input type="password" name="password" placeholder="password" style="width: 200px">
           <p></p>
-          <button type="submit" class="btn btn-primary">Register</button>
+          <button type="submit" class="btn btn-primary">Login</button>
         </form>
       </div>
     <div class="card-footer text-muted">
