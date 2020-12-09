@@ -31,9 +31,10 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "ID1" },
+  i3BoGr: { longURL: "https://www.google.ca", userID: "ID2" }
 };
+
 
 const users = { 
   "ID1": {
@@ -57,7 +58,8 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), urls: urlDatabase };
+    const keys = Object.keys(urlDatabase);
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), urls: urlDatabase, keys: keys};
     res.render("urls_index", templateVars);
 });
 
@@ -127,7 +129,7 @@ app.get("/logout", (req, res) => {
 
 app.post("/urls/:shortURL/update", (req, res) => {
   console.log(`Update: ${req.params.shortURL} to link to ${req.body.longURL}`);  // Log the POST request body to the console
-  urlDatabase[req.params.shortURL] = req.body.longURL;
+  urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   res.redirect(`http://localhost:8080/urls/`);
 });
 
@@ -138,7 +140,8 @@ app.post("/urls", (req, res) => {
   while (urlDatabase[shorten]) {
     shorten = generateRandomString();
   }
-  urlDatabase[shorten] = req.body.longURL;
+  urlDatabase[shorten] = { longURL: req.body.longURL, userID: req.cookies.user_id };
+  console.log(urlDatabase[shorten].userID)
   res.redirect(`http://localhost:8080/urls/${shorten}`);
 });
 
@@ -146,17 +149,17 @@ app.get("/urls/:shortURL", (req, res) => {
   if (!urlDatabase[req.params.shortURL]){
   res.redirect(`http://localhost:8080/urls/new`)
   } else {
-    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL };
     res.render("urls_show", templateVars);
   }
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  if (!urlDatabase[req.params.shortURL]){
+  if (urlDatabase[req.params.shortURL] === []){
     res.redirect(`http://localhost:8080/urls/new`)
   } else {
-    const longURL = urlDatabase[req.params.shortURL];
-    res.redirect(longURL);
+    let longurl = urlDatabase[req.params.shortURL].longURL;
+    res.redirect(longurl);
   }
 });
 

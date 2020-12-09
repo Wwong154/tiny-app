@@ -21,17 +21,17 @@
         </tr>
       </thead>
       <tbody>
-        <% for(let url in urls) { %>
+        <% for(let index of keys) { %>
           <tr>
-            <td><%= url %></td>
-            <td><%= urls[url] %></td>
+            <td><%= index %></td>
+            <td><%= urls[index].longURL %></td>
             <td>
-              <form method="GET" action="/urls/<%= url %>">
+              <form method="GET" action="/urls/<%= index %>">
                 <button type="submit" class="btn btn-outline-primary">Edit</button>
               </form>
             </td>
             <td>
-              <form method="POST" action="/urls/<%= url %>/delete">
+              <form method="POST" action="/urls/<%= index %>/delete">
                 <button type="submit" class="btn btn-outline-danger">Delete</button>
               </form>
             </td>
