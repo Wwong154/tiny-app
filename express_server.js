@@ -62,8 +62,12 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  const templateVars = { user_email: checkUserID(req.cookies["user_id"]) };
-  res.render("urls_new", templateVars);
+  if (req.cookies["user_id"]) {
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]) };
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect('http://localhost:8080/login');
+  }
 });
 
 app.post("/register", (req, res) => {
