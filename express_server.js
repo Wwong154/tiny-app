@@ -17,22 +17,33 @@ function checkUserID(id) {
 }
 
 function checkUserExist(email) {
-  const keys = Object.keys(users)
+  const keys = Object.keys(users);
   for(const user of keys) {
-    if (users[user].email === email)
-    {
+    if (users[user].email === email){
       return users[user].id;
     }
   }
   return false;
 }
+
+function urlsForUser(id) {
+  const shortURL = Object.keys(urlDatabase);
+  let result = [];
+  for(const url of shortURL) {
+    if (urlDatabase[url].userID === id){
+      result.push(url);
+    }
+  }
+  return result;
+}
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 app.set("view engine", "ejs");
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "ID1" },
-  i3BoGr: { longURL: "https://www.google.ca", userID: "ID2" }
+  i3BoGr: { longURL: "https://www.google.ca", userID: "ID1" }
 };
 
 
@@ -46,6 +57,11 @@ const users = {
     id: "ID2", 
     email: "user2@example.com", 
     password: "abcd"
+  },
+  "ID3": {
+    id: "ID3", 
+    email: "user3@example.com", 
+    password: "ABCD"
   }
 }
 
@@ -58,9 +74,16 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-    const keys = Object.keys(urlDatabase);
-    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), urls: urlDatabase, keys: keys};
+  console.log()
+  if (req.cookies["user_id"]) {
+    let keys = urlsForUser(req.cookies["user_id"]);
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), urls: urlDatabase, keys: keys, res: '', err: ''};
     res.render("urls_index", templateVars);
+  } else {
+    res.status(403);
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), urls: urlDatabase, keys: '', res: 403, err: 'Please login first!'};
+    res.render("urls_index", templateVars);
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -75,7 +98,8 @@ app.get("/urls/new", (req, res) => {
 app.post("/register", (req, res) => {
   if (checkUserExist(req.body.email)) {
     res.status(400);
-    res.send("Email already registered, please use log in instead");
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), res: 400, err: "Email already registered, please use login instead"};
+    res.render("register", templateVars);
   } else if (req.body.email && req.body.password){
     const id = generateRandomString()
     while (users[id]) {
@@ -86,12 +110,13 @@ app.post("/register", (req, res) => {
     res.redirect(`http://localhost:8080/urls/`);
   } else {
     res.status(400);
-    res.send("Please enter BOTH email or password");
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), res: 400, err: "Please enter BOTH email or password"};
+    res.render("register", templateVars);
   }
 });
 
 app.get("/register", (req, res) => {
-  const templateVars = { user_email: checkUserID(req.cookies["user_id"]) };
+  const templateVars = { user_email: checkUserID(req.cookies["user_id"]), res: '', err: ''};
   res.render("register", templateVars);
 });
 
@@ -102,7 +127,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  const templateVars = { user_email: checkUserID(req.cookies["user_id"]) };
+  const templateVars = { user_email: checkUserID(req.cookies["user_id"]),res: '', err: ''};
   res.render("login", templateVars);
 });
 
@@ -114,10 +139,12 @@ app.post("/login", (req, res) => {
     res.redirect(`http://localhost:8080/urls/`);
   } else if (userid) {
     res.status(403);
-    res.send(`The password you have entered does not match our record`);
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), res: 403, err: "The email and password combination does not match our record"};
+    res.render("login", templateVars);
   } else {
     res.status(403);
-    res.send(`The email you entered have not been register yet`);
+    const templateVars = { user_email: checkUserID(req.cookies["user_id"]), res: 403, err: "The email you entered is not valid"};
+    res.render("login", templateVars);
   }
 });
 

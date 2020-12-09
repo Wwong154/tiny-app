@@ -11,7 +11,7 @@
   <div class="card text-center">
     <% if (user_email) { %>
       <div class="card-header">
-        <h4>Hey, it seem like you have already logged in?</a></h4>
+        <h4>Hello, it seem like you have already logged in?</a></h4>
       </div>
       <div class="card-body">
         <form action="/logout" method="GET">
@@ -26,10 +26,10 @@
         <form action="/login" method="POST">
           <p class="card-title">E-mail: </p>
           <input type="email" name="email" placeholder="example@gmail.com" style="width: 200px">
-          <p></p>
+          <p style="color:red"><font size = "1"><% if (err === "The email you entered is not valid") {%>Error Code: <%= res %>. Error msg: <%= err %><% } %></font></p></p>
           <p class="card-title">Password: </p>
           <input type="password" name="password" placeholder="password"   style="width: 200px">
-          <p></p>
+          <p style="color:red"><font size = "1"><% if (err === "The email and password combination does not match our record") {%>Error Code: <%= res %>. Error msg: <%= err %><% } %></font></p></p>
           <button type="submit" class="btn btn-primary">Login</button>
         </form>
       </div>
