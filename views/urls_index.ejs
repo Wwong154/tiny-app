@@ -14,7 +14,7 @@
       <h3>Please <a href='/login'>login<a> first to use My Urls</h3>
     <% } else { %>
     <h3>My URLs</h3>
-      <% if (keys) { %>
+      <% if (!keys) { %>
         <p>It seems like you do not have any url. <a href='/urls/new'>Create?<a></p>
       <% } else { %>
         <table class="table">
@@ -33,12 +33,12 @@
                 <td><%= urls[index].longURL %></td>
                 <td>                
                   <form method="GET" action="/urls/<%= index %>">
-                    <button type="submit" class="btnbtn-outline-primary">Edit</  button>
+                    <button type="submit" class="btn btn-outline-primary">Edit</button>
                   </form>
                 </td>
                 <td>
                   <form method="POST" action="/urls/<%= index %>/delete">
-                    <button type="submit" class="btn  btn-outline-danger">Delete</ button>
+                    <button type="submit" class="btn btn-outline-danger">Delete</button>
                   </form>
                 </td>
                </tr>
