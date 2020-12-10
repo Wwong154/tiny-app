@@ -14,18 +14,19 @@
       <h4 style="text-align: center; margin-top: 20px;">Please <a href='/login'>Sign in<a> first to use My Urls</h4>
     <% } else { %>
     <h3>My URLs</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Short URL</th>
+          <th scope="col">Long URL</th>
+          <th scope="col">Edit</th>
+          <th scope="col">Delete</th>
+        </tr>
+      </thead>
       <% if (!keys) { %>
+        </table>
         <h5 style="text-align: center; margin-top: 20px;">It seems like you do not have any url. <a href='/urls/new'>Create?<a></h5>
       <% } else { %>
-        <table class="table">
-          <thead>
-            <tr>
-              <th scope="col">Short URL</th>
-              <th scope="col">Long URL</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
-            </tr>
-          </thead>
           <tbody>
             <% for(let index of keys) { %>
               <tr>
