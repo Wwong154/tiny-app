@@ -3,6 +3,8 @@ const app = express();
 const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+var bcrypt = require('bcrypt');
+var salt = bcrypt.genSaltSync(10);
 
 const generateRandomString = function() {
   return Math.random().toString(36).substring(4,10);
@@ -50,17 +52,17 @@ const users = {
   "ID1": {
     id: "ID1",
     email: "user@example.com",
-    password: "1234"
+    password: bcrypt.hashSync("1234", salt)
   },
   "ID2": {
     id: "ID2",
     email: "user2@example.com",
-    password: "abcd"
+    password: bcrypt.hashSync("abcd", salt)
   },
   "ID3": {
     id: "ID3",
     email: "user3@example.com",
-    password: "ABCD"
+    password: bcrypt.hashSync("ABCD", salt)
   }
 };
 
@@ -106,7 +108,7 @@ app.post("/register", (req, res) => {
     while (users[id]) {
       id = generateRandomString();
     }
-    users[id] = {id: id, email: req.body.email, password: req.body.password};
+    users[id] = {id: id, email: req.body.email, password: bcrypt.hashSync(req.body.password, salt)};
     res.cookie("user_id",id);
     res.redirect(`/urls/`);
   } else {
@@ -139,7 +141,7 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const userid = checkUserExist(req.body.email);
-  if (userid && users[userid].password === req.body.password) {// if password matched, log the user in
+  if (userid && bcrypt.compareSync(req.body.password, users[userid].password)) {// if password matched, log the user in
     console.log(`New log in: ${userid}`);  // Log the POST request body to the console
     res.cookie("user_id",checkUserExist(req.body.email));
     res.redirect(`/urls/`);
