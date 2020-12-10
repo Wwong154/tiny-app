@@ -19,7 +19,6 @@ const urlDatabase = {
   sgq3y6: { longURL: "https://www.google.ca", userID: "ID1" }
 };
 
-
 const users = {
   "ID1": {
     id: "ID1",
@@ -157,13 +156,11 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  if (req.session.userID === urlDatabase[req.params.shortURL].userID) {
-    if (!urlDatabase[req.params.shortURL]) {
-      res.redirect(`/urls/new`);
-    } else {
+  if (urlDatabase[req.params.shortURL] && req.session.userID === urlDatabase[req.params.shortURL].userID) {
       const templateVars = { userEmail: checkUserMail(req.session.userID, users), shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, res: '', err: '' };
       res.render("urls_show", templateVars);
-    }
+  } else if (!urlDatabase[req.params.shortURL]) {
+    res.redirect(`/urls/new`);
   } else {
     res.status(403);
     const templateVars = { userEmail: checkUserMail(req.session.userID, users), shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, res: 403, err: 'Not owner of url' };

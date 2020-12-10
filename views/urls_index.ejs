@@ -11,11 +11,11 @@
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
     <% if (err) { %>
-      <h3>Please <a href='/login'>login<a> first to use My Urls</h3>
+      <h4 style="text-align: center; margin-top: 20px;">Please <a href='/login'>Sign in<a> first to use My Urls</h4>
     <% } else { %>
     <h3>My URLs</h3>
       <% if (!keys) { %>
-        <p>It seems like you do not have any url. <a href='/urls/new'>Create?<a></p>
+        <h5 style="text-align: center; margin-top: 20px;">It seems like you do not have any url. <a href='/urls/new'>Create?<a></h5>
       <% } else { %>
         <table class="table">
           <thead>
