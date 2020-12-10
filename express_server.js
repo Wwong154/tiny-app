@@ -1,10 +1,11 @@
 const express = require("express");
-const app = express();
-const PORT = 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
-const  { checkUserMail, generateRandomString, getUserByEmail, urlsForUser } = require('./helper.js');
 const bcrypt = require('bcrypt');
+const methodOverride = require('method-override')
+const  { checkUserMail, generateRandomString, getUserByEmail, urlsForUser } = require('./helper.js');
+const app = express();
+const PORT = 8080; 
 const salt = bcrypt.genSaltSync(10);
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -13,6 +14,7 @@ app.use(cookieSession({
   keys: ['Willy Wonka']
 }));
 app.set("view engine", "ejs");
+app.use(methodOverride('_method'))
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "ID1" },
@@ -94,7 +96,7 @@ app.get("/register", (req, res) => {
   res.render("register", templateVars);
 });
 
-app.post("/urls/:shortURL/delete", (req, res) => {
+app.delete("/urls/:shortURL", (req, res) => {
   if (req.session.userID === urlDatabase[req.params.shortURL].userID) {
     console.log("Delete: " + req.params.shortURL);  // Log the POST request body to the console
     delete urlDatabase[req.params.shortURL];
@@ -133,7 +135,7 @@ app.get("/logout", (req, res) => {
   res.redirect(`/urls/`);
 });
 
-app.post("/urls/:shortURL/update", (req, res) => {
+app.put("/urls/:shortURL", (req, res) => {
   if (req.session.userID === urlDatabase[req.params.shortURL].userID) {
     console.log(`Update: ${req.params.shortURL} to link to ${req.body.longURL}`);  // Log the POST request body to the console
     urlDatabase[req.params.shortURL].longURL = req.body.longURL;
@@ -179,11 +181,6 @@ app.get("/u/:shortURL", (req, res) => {
 
 app.get("/hello", (req, res) => { //no longer need, keep for gag
   res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-
-app.get("/*", (req, res) => { //no longer need, keep for gag
-  res.status(404);
-  res.send("<html><body><b>404: The pages you are looking for does not exist<></body></html>\n");
 });
 
 app.listen(PORT, () => {
