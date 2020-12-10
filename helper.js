@@ -30,9 +30,9 @@ const urlsForUser = function(id, db) {
   return result;
 };
 
-module.exports = { 
+module.exports = {
   checkUserMail,
   generateRandomString,
   getUserByEmail,
   urlsForUser
-}
+};
