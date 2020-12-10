@@ -181,6 +181,11 @@ app.get("/hello", (req, res) => { //no longer need, keep for gag
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
 
+app.get("/*", (req, res) => { //no longer need, keep for gag
+  res.status(404);
+  res.send("<html><body><b>404: The pages you are looking for does not exist<></body></html>\n");
+});
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
