@@ -112,7 +112,6 @@ app.get("/register", (req, res) => {
 
 app.delete("/urls/:shortURL", (req, res) => {
   if (req.session.userID === urlDatabase[req.params.shortURL].userID) {
-    console.log("Delete: " + req.params.shortURL);  // Log the POST request body to the console
     delete urlDatabase[req.params.shortURL];
     res.redirect(`/urls/`);
   } else {
@@ -135,7 +134,6 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   const userid = getUserByEmail(req.body.email, users);
   if (userid && bcrypt.compareSync(req.body.password, users[userid].password)) {// if password matched, log the user in
-    console.log(`New log in: ${userid}`);  // Log the POST request body to the console
     req.session.userID = getUserByEmail(req.body.email, users);
     res.redirect(`/urls/`);
   } else if (userid) {// if password do not matched, shown error of not matching
@@ -166,14 +164,12 @@ app.put("/urls/:shortURL", (req, res) => {
 });
 
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
   if (req.session.userID) {
     let shorten = generateRandomString();
     while (urlDatabase[shorten]) {
       shorten = generateRandomString();
     }
     urlDatabase[shorten] = { longURL: req.body.longURL, userID: req.session.userID, visited: 0, visitor: [], visLog : [], created: Date(Date.now() * 1000).slice(4, 15) };
-    console.log(urlDatabase[shorten].userID);
     res.redirect(`/urls/${shorten}`);
   } else {
     res.status(403);
@@ -226,7 +222,6 @@ app.get("/u/:shortURL", (req, res) => {
       let log = req.session.guestID + " has visited on " + Date(Date.now() * 1000);
       urlDatabase[req.params.shortURL].visLog.push(log);
     }
-    console.log(urlDatabase[req.params.shortURL].visLog);
     let longurl = urlDatabase[req.params.shortURL].longURL;
     res.redirect(longurl);
   }
