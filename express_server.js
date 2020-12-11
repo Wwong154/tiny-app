@@ -56,23 +56,27 @@ app.get("/urls.json", (req, res) => {
 app.get("/urls", (req, res) => {
   if (req.session.userID) {
     let keys = urlsForUser(req.session.userID, urlDatabase);
-    const templateVars = { userEmail: checkUserMail(req.session.userID, users), urls: urlDatabase, keys: keys, res: '', err: ''};
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), urls: urlDatabase, keys: keys, err: req.session.error ? req.session.error : false };
     if (!keys.length) {
       templateVars.keys = false;
     }
+    req.session.error = null;
     res.render("urls_index", templateVars);
   } else {
     res.status(403);
-    const templateVars = { userEmail: checkUserMail(req.session.userID,  users), urls: urlDatabase, keys: '', res: 403, err: 'Please login first!'};
+    const templateVars = { userEmail: checkUserMail(req.session.userID,  users), urls: urlDatabase, keys: '', err: req.session.error ? req.session.error : "you need to log in first"};
+    req.session.error = null;
     res.render("urls_index", templateVars);
   }
 });
 
 app.get("/urls/new", (req, res) => {
   if (req.session.userID) {
-    const templateVars = { userEmail: checkUserMail(req.session.userID, users) };
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), err: req.session.error ? req.session.error : false };
+    req.session.error = null;
     res.render("urls_new", templateVars);
   } else {
+    req.session.error += ". If you wish to create a link, please sign in to do so.";
     res.redirect('/login');
   }
 });
@@ -101,8 +105,8 @@ app.get("/register", (req, res) => {
   if (req.session.userID) {
     res.redirect('/urls');
   } else {
-  const templateVars = { userEmail: checkUserMail(req.session.userID, users), res: '', err: ''};
-  res.render("register", templateVars);
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), err: false};
+    res.render("register", templateVars);
   }
 });
 
@@ -113,16 +117,18 @@ app.delete("/urls/:shortURL", (req, res) => {
     res.redirect(`/urls/`);
   } else {
     res.status(403);
-    res.send("you are not the owner of this url");
+    req.session.error = "You are not the owner of the url you try to access";
+    res.redirect(`/urls/`);
   }
 });
 
 app.get("/login", (req, res) => {
-  if (req.session.userID){
+  if (req.session.userID) {
     res.redirect('/urls');
   } else {
-  const templateVars = { userEmail: checkUserMail(req.session.userID, users),res: '', err: ''}; //get is always first try, so no error
-  res.render("login", templateVars);
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), err: req.session.error ? req.session.error : false };
+    req.session.error = null;
+    res.render("login", templateVars);
   }
 });
 
@@ -134,29 +140,28 @@ app.post("/login", (req, res) => {
     res.redirect(`/urls/`);
   } else if (userid) {// if password do not matched, shown error of not matching
     res.status(403);
-    const templateVars = { userEmail: checkUserMail(req.session.userID, users), res: 403, err: "The email and password combination does not match our record"};
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), err: "The email and password combination does not match our record"};
     res.render("login", templateVars);
   } else {// if email doesn't exist, tell user
     res.status(403);
-    const templateVars = { userEmail: checkUserMail(req.session.userID, users), res: 403, err: "The email you entered is not valid"};
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), err: "The email you entered is not valid"};
     res.render("login", templateVars);
   }
 });
 
 app.get("/logout", (req, res) => {
-  console.log(`User: ${checkUserMail(req.session.userID, users)} has logged out`);  // Log the POST request body to the console
-  delete req.session.userID;
+  req.session.userID = null;
   res.redirect(`/urls/`);
 });
 
 app.put("/urls/:shortURL", (req, res) => {
   if (req.session.userID === urlDatabase[req.params.shortURL].userID) {
-    console.log(`Update: ${req.params.shortURL} to link to ${req.body.longURL}`);  // Log the POST request body to the console
     urlDatabase[req.params.shortURL].longURL = req.body.longURL;
     res.redirect(`/urls/`);
   } else {
     res.status(403);
-    res.send("you are not the owner of this url");
+    req.session.error = "You are not the owner of the url";
+    res.redirect('/urls');
   }
 });
 
@@ -172,19 +177,21 @@ app.post("/urls", (req, res) => {
     res.redirect(`/urls/${shorten}`);
   } else {
     res.status(403);
+    req.session.error = "You have to sign in to create new url";
     res.redirect('/urls');
   }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   if (urlDatabase[req.params.shortURL] && req.session.userID === urlDatabase[req.params.shortURL].userID) {
-    const templateVars = { userEmail: checkUserMail(req.session.userID, users), urlInfo: urlDatabase[req.params.shortURL], shortURL: req.params.shortURL, res: '', err: '' };
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), urlInfo: urlDatabase[req.params.shortURL], shortURL: req.params.shortURL, err: false };
     res.render("urls_show", templateVars);
   } else if (!urlDatabase[req.params.shortURL]) {
+    req.session.error = "The link you entered does not exist";
     res.redirect(`/urls/new`);
   } else {
     res.status(403);
-    const templateVars = { userEmail: checkUserMail(req.session.userID, users), shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, uniVisCount : urlDatabase[req.params.shortURL].visitor.length, visitCount :  urlDatabase[req.params.shortURL].visited, Log : urlDatabase[req.params.shortURL].visLog, res: 403, err: 'Not owner of url' };
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), shortURL: req.params.shortURL, err: true };
     res.render("urls_show", templateVars);
   }
 });
@@ -192,6 +199,7 @@ app.get("/urls/:shortURL", (req, res) => {
 app.get("/u/:shortURL", (req, res) => {
   if (!urlDatabase[req.params.shortURL]) {
     res.status(404);
+    req.session.error = "The link you try to access does not exist";
     res.redirect(`/urls/new`);
   } else {
     urlDatabase[req.params.shortURL].visited++;

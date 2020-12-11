@@ -12,10 +12,10 @@
       <form style="margin-left: 32px;" action="/register" method="POST">
         <p style="margin-bottom: 0px;">E-mail: </p>
         <input type="email" name="email" placeholder="example@gmail.com" style="width: 200px">
-        <p style="color:red"><font size = "1"><% if (err === "Email already registered, please use login instead") {%>Error Code: <%= res %>. Error msg: <%= err %><% } %></font></p>
+        <p style="color:red"><font size = "1"><% if (err === "Email already registered, please use login instead") {%>Error msg: <%= err %><% } %></font></p>
         <p style="margin-bottom: 0px;">Password: </p>
         <input type="password" name="password" placeholder="password" style="width: 200px">
-        <p style="color:red"><font size = "1"><% if (err === "Please enter BOTH email or password") {%>Error Code: <%= res %>. Error msg: <%= err %><% } %></font></p>
+        <p style="color:red"><font size = "1"><% if (err === "Please enter BOTH email or password") {%>Error msg: <%= err %><% } %></font></p>
         <button style="margin-top: 5px;" type="submit" class="btn btn-primary">Register</button>
       </form>
   <!-- Bootstrap JS -->

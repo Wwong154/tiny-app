@@ -11,7 +11,10 @@
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
     <% if (err) { %>
-      <h4 style="text-align: center; margin-top: 20px;">Please <a href='/login'>Sign in<a> first</h4>
+      <% if (!(err === "you need to log in first")) { %>
+        <p style="text-align: center; color:red"><%= err %></p>
+      <% } %>
+      <h4 style="text-align: center; margin-top: 20px;">Please <a href='/login'>Sign in<a> to use TinyApp</h4>
     <% } else { %>
     <h3 style="margin-bottom: 16px;">My URLs</h3>
     <table class="table">

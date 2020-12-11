@@ -12,6 +12,9 @@
   <body>
     <%- include('partials/_header') %>
     <main>
+      <% if (err) { %>
+        <p style="margin-top: 20px; margin-left: 18px; color:red"><%= err %></p>
+      <% } %>
       <h3 style="margin-top: 20px; margin-left: 16px; margin-bottom: 10px">Create TinyURL</h3>
       <form style="margin-left: 32px;" action="/urls" method="POST">
         <div class="form-group mb-2">

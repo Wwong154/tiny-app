@@ -8,6 +8,9 @@
 
 <body>
   <%- include('partials/_header') %>
+    <% if (err && err !== "The email you entered is not valid" && err !== "The email and password combination does not match our record") { %>
+      <p style="margin-top: 20px; margin-left: 18px; color:red"><%= err %></p>
+    <% } %>
     <h3 style="margin-top: 20px; margin-left: 16px; margin-bottom: 10px">Sign in</h3>
     <form style="margin-left: 32px;" action="/login" method="POST">
       <p class="card-title" style="margin-bottom: 0px;">E-mail: </p>
