@@ -7,7 +7,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 !["screenshot of Signin Page"](https://github.com/Wwong154/tiny-app/blob/master/doc/demo_Signin.png)
 !["screenshot of urls Page"](https://github.com/Wwong154/tiny-app/blob/master/doc/demo_urls.png)
 !["screenshot of urls/:id Page"](https://github.com/Wwong154/tiny-app/blob/master/doc/demo_urls_:id.png)
-!["screenshot of urls/new Page"](https://github.com/Wwong154/tiny-app/blob/master/doc/demo_urls_new_.png)
+!["screenshot of urls/new Page"](https://github.com/Wwong154/tiny-app/blob/master/doc/demo_urls_new.png)
 
 ## Dependencies
 
