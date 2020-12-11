@@ -2,10 +2,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-const methodOverride = require('method-override')
-const  { checkUserMail, generateRandomString, getUserByEmail, urlsForUser } = require('./helper.js');
+const methodOverride = require('method-override');
+const  { checkIfVisited, checkUserMail, generateRandomString, getUserByEmail, urlsForUser } = require('./helper.js');
 const app = express();
-const PORT = 8080; 
+const PORT = 8080;
 const salt = bcrypt.genSaltSync(10);
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -14,16 +14,7 @@ app.use(cookieSession({
   keys: ['Willy Wonka']
 }));
 app.set("view engine", "ejs");
-app.use(methodOverride('_method'))
-
-const checkIfVisited = function(url, id, db) {
-  for (const person of db[url].visitor) {
-    if (person === id) {
-      return true;
-    }
-  }
-  return false;
-};
+app.use(methodOverride('_method'));
 
 const urlDatabase = {
   b6UTxQ: { longURL: "https://www.tsn.ca", userID: "ID1", visited: 0, visitor: [], visLog : [] },
@@ -170,8 +161,8 @@ app.post("/urls", (req, res) => {
 
 app.get("/urls/:shortURL", (req, res) => {
   if (urlDatabase[req.params.shortURL] && req.session.userID === urlDatabase[req.params.shortURL].userID) {
-      const templateVars = { userEmail: checkUserMail(req.session.userID, users), shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, uniVisCount : urlDatabase[req.params.shortURL].visitor.length, visitCount :  urlDatabase[req.params.shortURL].visited, Log : urlDatabase[req.params.shortURL].visLog, res: '', err: '' };
-      res.render("urls_show", templateVars);
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, uniVisCount : urlDatabase[req.params.shortURL].visitor.length, visitCount :  urlDatabase[req.params.shortURL].visited, Log : urlDatabase[req.params.shortURL].visLog, res: '', err: '' };
+    res.render("urls_show", templateVars);
   } else if (!urlDatabase[req.params.shortURL]) {
     res.redirect(`/urls/new`);
   } else {
@@ -187,21 +178,21 @@ app.get("/u/:shortURL", (req, res) => {
   } else {
     urlDatabase[req.params.shortURL].visited++;
     if (checkUserMail(req.session.userID, users)) {
-      checkIfVisited(req.params.shortURL, req.session.userID, urlDatabase) 
-      ? undefined
-      : urlDatabase[req.params.shortURL].visitor.push(req.session.userID);
+      checkIfVisited(req.params.shortURL, req.session.userID, urlDatabase)
+        ? undefined
+        : urlDatabase[req.params.shortURL].visitor.push(req.session.userID);
       let log = req.session.userID + " has visited on " + Date(Date.now() * 1000);
       urlDatabase[req.params.shortURL].visLog.push(log);
     } else {
       if (req.session.guestID) {
-      checkIfVisited(req.params.shortURL, req.session.guestID, urlDatabase)
-      ? undefined
-      : urlDatabase[req.params.shortURL].visitor.push(req.session.guestID);
+        checkIfVisited(req.params.shortURL, req.session.guestID, urlDatabase)
+          ? undefined
+          : urlDatabase[req.params.shortURL].visitor.push(req.session.guestID);
       } else {
         let guestID = generateRandomString();
-          while (guest[guestID]) {
-            guestID = generateRandomString();
-          }
+        while (guest[guestID]) {
+          guestID = generateRandomString();
+        }
         guest[guestID] = guestID;
         req.session.guestID = guestID;
         urlDatabase[req.params.shortURL].visitor.push(req.session.guestID);
@@ -209,7 +200,7 @@ app.get("/u/:shortURL", (req, res) => {
       let log = req.session.guestID + " has visited on " + Date(Date.now() * 1000);
       urlDatabase[req.params.shortURL].visLog.push(log);
     }
-    console.log(urlDatabase[req.params.shortURL].visLog)
+    console.log(urlDatabase[req.params.shortURL].visLog);
     let longurl = urlDatabase[req.params.shortURL].longURL;
     res.redirect(longurl);
   }

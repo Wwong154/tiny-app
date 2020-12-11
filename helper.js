@@ -30,7 +30,17 @@ const urlsForUser = function(id, db) {
   return result;
 };
 
+const checkIfVisited = function(url, id, db) {
+  for (const person of db[url].visitor) {
+    if (person === id) {
+      return true;
+    }
+  }
+  return false;
+};
+
 module.exports = {
+  checkIfVisited,
   checkUserMail,
   generateRandomString,
   getUserByEmail,

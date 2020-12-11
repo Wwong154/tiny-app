@@ -35,7 +35,7 @@
           <form method="POST" action="/urls/<%= shortURL %>?_method=PUT">
             <p class="card-text">New url :
               <input type="text" name="longURL" placeholder="<%= longURL %>" style="width: 300px; ">
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <button style="margin-bottom: 4px;" type="submit" class="btn btn-primary">Submit</button>
             </p>
           </form>
         </div>
@@ -44,7 +44,7 @@
     <p style="text-align: center; color:grey; margin-top: 10px; margin-bottom: 0px;"><font size = "1"><%= uniVisCount %>  different person have visted</font></p>
     <p style="text-align: center; color:grey;"><font size = "1"><%= visitCount %> total visits</font></p>
     <h5 style="text-align: center; color:grey;">Event Log</h5>
-    <div style="height:150px; overflow:auto; word-wrap: break-word">
+    <div style="height:150px; overflow:auto;">
       <% for(let event of Log) { %>
         <p style="text-align: center; color:grey; margin-top: 0px; margin-bottom: 0px;"><font size = "1"><%= event %></font></p>
       <% } %>

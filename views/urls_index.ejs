@@ -13,7 +13,7 @@
     <% if (err) { %>
       <h4 style="text-align: center; margin-top: 20px;">Please <a href='/login'>Sign in<a> first to use My Urls</h4>
     <% } else { %>
-    <h3>My URLs</h3>
+    <h3 style="margin-bottom: 16px;">My URLs</h3>
     <table class="table">
       <thead>
         <tr>
@@ -30,15 +30,15 @@
           <tbody>
             <% for(let index of keys) { %>
               <tr>
-                <td><%= index %></td>
-                <td><%= urls[index].longURL %></td>
-                <td>                
-                  <form method="GET" action="/urls/<%= index %>">
+                <td style="vertical-align: middle;"><%= index %></td>
+                <td style="vertical-align: middle;"><%= urls[index].longURL %></td>
+                <td style="vertical-align: middle;">                
+                  <form style="margin-bottom: 0px;" method="GET" action="/urls/<%= index %>">
                     <button type="submit" class="btn btn-outline-primary">Edit</button>
                   </form>
                 </td>
-                <td>
-                  <form method="POST" action="/urls/<%= index %>?_method=DELETE">
+                <td style="vertical-align: middle;">
+                  <form style="margin-bottom: 0px;" method="POST" action="/urls/<%= index %>?_method=DELETE">
                     <button type="submit" class="btn btn-outline-danger">Delete</button>
                   </form>
                 </td>
