@@ -8,28 +8,20 @@
 
 <body>
   <%- include('partials/_header') %>
-    <% if (userEmail) { %>
-      <h4 style="text-align: center; margin-top: 20px;">🤔 It seem like you have already signed in</h4>
-      <form style="text-align: center;" action="/logout" method="GET">
-        <p><font size = "4">Do you want to</font></p>
-        <button type="submit" class="btn btn-primary">Logout ?</button>
-      </form>
-    <% } else { %>
-      <h3 style="margin-top: 20px; margin-left: 16px; margin-bottom: 10px">Sign in</h3>
-      <form style="margin-left: 32px;" action="/login" method="POST">
-        <p class="card-title" style="margin-bottom: 0px;">E-mail: </p>
-        <input type="email" name="email" placeholder="example@gmail.com" style="width: 200px">
-        <p style="color:red"><font size = "1"><% if (err === "The email you entered is not valid") {%>Error : <%= err %><% } %></font></p></p>
-        <p class="card-title" style="margin-bottom: 0px;">Password: </p>
-        <input type="password" name="password" placeholder="password"   style="width: 200px">
-        <% if (err === "The email and password combination does not match our record") { %>
-          <p style="color:red" ><font size = "1">Error : <%= err %></font></p>
-        <% } else { %>
-          <p><font size = "1">Don't have a account?<a href="/register"> Sign up now!</a></font></p>
-        <% } %>
-        <button type="submit" class="btn btn-primary">Login</button>
-      </form>
-    <% } %>
+    <h3 style="margin-top: 20px; margin-left: 16px; margin-bottom: 10px">Sign in</h3>
+    <form style="margin-left: 32px;" action="/login" method="POST">
+      <p class="card-title" style="margin-bottom: 0px;">E-mail: </p>
+      <input type="email" name="email" placeholder="example@gmail.com" style="width: 200px">
+      <p style="color:red"><font size = "1"><% if (err === "The email you entered is not valid") {%>Error : <%= err %><% } %></font></p></p>
+      <p class="card-title" style="margin-bottom: 0px;">Password: </p>
+      <input type="password" name="password" placeholder="password"   style="width: 200px">
+      <% if (err === "The email and password combination does not match our record") { %>
+        <p style="color:red" ><font size = "1">Error : <%= err %></font></p>
+      <% } else { %>
+        <p><font size = "1">Don't have a account?<a href="/register"> Sign up now!</a></font></p>
+      <% } %>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

@@ -11,7 +11,7 @@
   <%- include('partials/_header') %>
   <main style="margin: 1em;">
     <% if (err) { %>
-      <h4 style="text-align: center; margin-top: 20px;">Please <a href='/login'>Sign in<a> first to use My Urls</h4>
+      <h4 style="text-align: center; margin-top: 20px;">Please <a href='/login'>Sign in<a> first</h4>
     <% } else { %>
     <h3 style="margin-bottom: 16px;">My URLs</h3>
     <table class="table">
@@ -19,6 +19,9 @@
         <tr>
           <th scope="col">Short URL</th>
           <th scope="col">Long URL</th>
+          <th scope="col">Created On</th>
+          <th scope="col">Total Visit</th>
+          <th scope="col">Unique Visit</th>
           <th scope="col">Edit</th>
           <th scope="col">Delete</th>
         </tr>
@@ -32,6 +35,9 @@
               <tr>
                 <td style="vertical-align: middle;"><%= index %></td>
                 <td style="vertical-align: middle;"><%= urls[index].longURL %></td>
+                <td style="vertical-align: middle;"><%= urls[index].created %></td>
+                <td style="vertical-align: middle;"><%= urls[index].visited %></td>
+                <td style="vertical-align: middle;"><%= urls[index].visitor.length %></td>
                 <td style="vertical-align: middle;">                
                   <form style="margin-bottom: 0px;" method="GET" action="/urls/<%= index %>">
                     <button type="submit" class="btn btn-outline-primary">Edit</button>

@@ -17,8 +17,8 @@ app.set("view engine", "ejs");
 app.use(methodOverride('_method'));
 
 const urlDatabase = {
-  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "ID1", visited: 0, visitor: [], visLog : [] },
-  sgq3y6: { longURL: "https://www.google.ca", userID: "ID1", visited: 0, visitor: [], visLog : [] }
+  b6UTxQ: { longURL: "https://www.tsn.ca", userID: "ID1", visited: 0, visitor: [], visLog : [], created: Date(Date.now() * 1000).slice(4, 15) },
+  sgq3y6: { longURL: "https://www.google.ca", userID: "ID1", visited: 0, visitor: [], visLog : [], created: Date(Date.now() * 1000).slice(4, 15) }
 };
 
 const users = {
@@ -42,7 +42,11 @@ const users = {
 const guest = {};
 
 app.get("/", (req, res) => {
-  res.send("Hello!");
+  if (req.session.userID) {
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
 });
 
 app.get("/urls.json", (req, res) => {
@@ -94,8 +98,12 @@ app.post("/register", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
+  if (req.session.userID) {
+    res.redirect('/urls');
+  } else {
   const templateVars = { userEmail: checkUserMail(req.session.userID, users), res: '', err: ''};
   res.render("register", templateVars);
+  }
 });
 
 app.delete("/urls/:shortURL", (req, res) => {
@@ -110,8 +118,12 @@ app.delete("/urls/:shortURL", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
+  if (req.session.userID){
+    res.redirect('/urls');
+  } else {
   const templateVars = { userEmail: checkUserMail(req.session.userID, users),res: '', err: ''}; //get is always first try, so no error
   res.render("login", templateVars);
+  }
 });
 
 app.post("/login", (req, res) => {
@@ -150,18 +162,23 @@ app.put("/urls/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
   console.log(req.body);  // Log the POST request body to the console
-  let shorten = generateRandomString();
-  while (urlDatabase[shorten]) {
-    shorten = generateRandomString();
+  if (req.session.userID) {
+    let shorten = generateRandomString();
+    while (urlDatabase[shorten]) {
+      shorten = generateRandomString();
+    }
+    urlDatabase[shorten] = { longURL: req.body.longURL, userID: req.session.userID, visited: 0, visitor: [], visLog : [], created: Date(Date.now() * 1000).slice(4, 15) };
+    console.log(urlDatabase[shorten].userID);
+    res.redirect(`/urls/${shorten}`);
+  } else {
+    res.status(403);
+    res.redirect('/urls');
   }
-  urlDatabase[shorten] = { longURL: req.body.longURL, userID: req.session.userID, visited: 0, visitor: [], visLog : [] };
-  console.log(urlDatabase[shorten].userID);
-  res.redirect(`/urls/${shorten}`);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
   if (urlDatabase[req.params.shortURL] && req.session.userID === urlDatabase[req.params.shortURL].userID) {
-    const templateVars = { userEmail: checkUserMail(req.session.userID, users), shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, uniVisCount : urlDatabase[req.params.shortURL].visitor.length, visitCount :  urlDatabase[req.params.shortURL].visited, Log : urlDatabase[req.params.shortURL].visLog, res: '', err: '' };
+    const templateVars = { userEmail: checkUserMail(req.session.userID, users), urlInfo: urlDatabase[req.params.shortURL], shortURL: req.params.shortURL, res: '', err: '' };
     res.render("urls_show", templateVars);
   } else if (!urlDatabase[req.params.shortURL]) {
     res.redirect(`/urls/new`);
@@ -174,6 +191,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   if (!urlDatabase[req.params.shortURL]) {
+    res.status(404);
     res.redirect(`/urls/new`);
   } else {
     urlDatabase[req.params.shortURL].visited++;
