@@ -27,6 +27,7 @@ TinyApp is a full stack web application built with Node and Express that allows 
 ## Usage
 
 - Tinyapp will allow registered user to create shorten url
+- Tinyapp will only take you site started with http / https, and will add the http prefix if not added by user
 - Tinyapp will store you list of url, and only owner will be able to edit/ delete
 - Owner will be able to see the total visit and unique visit of the url that they have created
 - Guest or non-owner will not be allow to see the destination of the url, though still able to get redirected
